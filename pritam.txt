@@ -1,0 +1,65 @@
+# docker commands:
+
+docker build -t alexaa123/flight-reservation:latest
+docker push alexaa123/flight-reservation:latest
+
+
+# (Jenkins user will need permmision to run docker commands.)
+user : jenkins    group: docker
+
+gpasswd -a jenkins docker 
+
+# Do docker login with jenkins user 
+# after login you will see .docker file.
+# move that file to /var/lib/jenkins
+
+cp -rvf .docker /var/lib/jenkins
+
+chown jenkins -R /var/lib/jenkins/.docker    # jenkins will be owner of .docker 
+
+#####
+K8s access
+first aws cli to acess throught cli in your instance
+
+
+aws eks update-kubeconfig --name flight-cluster --region us-east-1
+
+# install kubectl 
+
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.14/2025-08-03/bin/linux/amd64/kubectl
+
+##give execute permission   
+
+chmod +x ./kubectl
+
+## Copy the binary to a folder in your PATH. If you have already installed a version of kubectl, 
+then we recommend creating a $HOME/bin/kubectl and ensuring that $HOME/bin comes first in your $PATH. ##
+
+
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+
+##  Add the $HOME/bin path to your shell initialization file so that it is configured when you open a shell. 
+echo 'export PATH=$HOME/bin:$PATH' >> ~/.bash_profile
+
+## Check if kubectl is installed and confirm its version
+kubectl version --client
+
+
+
+# check nodes;
+kubectl get nodes
+
+
+#### Give kubectl and aws access to jenkins user;
+# move .aws .kube to /var/lib/jenkins:
+
+cp -rvf .kube/ /var/lib/jenkins
+chown jenkins -R /var/lib/jenkins/.kube/
+
+cp -rvf .aws/ /var.lib/jenkins
+chown jenkins -R .var.lib/jenkins/.aws/
+
+
+systemctl restart jenkins
+
+
