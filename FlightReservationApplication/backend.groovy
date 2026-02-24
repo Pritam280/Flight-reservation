@@ -29,7 +29,7 @@ pipeline{
             steps{
                 sh '''
                     cd FlightReservationApplication
-                    docker build -t flight-reservation:latest 
+                    docker build -t flight-reservation:latest .
                     docker push alexaa123/flight-reservation:latest
                     docker rmi alexaa123/flight-reservation:latest
                 '''
